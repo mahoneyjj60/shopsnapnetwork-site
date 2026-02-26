@@ -231,7 +231,7 @@
 </div>
 
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
   // ============================================
   // CONFIGURATION — fill in before deploying
@@ -289,13 +289,16 @@
   // LOAD STORES
   // ============================================
   async function loadStores() {
+    console.log('loadStores() called');
     const { data, error } = await sb
       .from('stores')
       .select('id, store_name, city')
       .order('store_name');
 
+    console.log('stores result:', { data, error });
     const grid = document.getElementById('stores-grid');
     if (error || !data || data.length === 0) {
+      console.error('stores error or empty:', error);
       grid.innerHTML = '<p style="color:var(--color-muted);font-size:0.9rem;">No stores available yet — check back soon.</p>';
       return;
     }
