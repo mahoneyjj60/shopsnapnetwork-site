@@ -429,6 +429,12 @@
   // UTILITY
   // ============================================
 
+  function showMsg(el, type, text) {
+    el.className = 'msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+  }
+
   // Wire up contact links — split to prevent Cloudflare email mangling
   const _e = ['hello', '@', 'shopsnapnetwork', '.com'].join('');
   ['contact-cta', 'contact-footer'].forEach(id => {
