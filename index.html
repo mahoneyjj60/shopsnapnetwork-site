@@ -213,7 +213,7 @@
         <p class="section-label">For Store Owners</p>
         <h2 class="section-heading">Turn new inventory into immediate sales.</h2>
         <p>ShopSnap connects your consignment shop to a network of motivated buyers who are already looking for what you have. AI-powered intake, automatic subscriber alerts, and Square POS integration — built for the way consignment shops actually work.</p>
-        <a href="/cdn-cgi/l/email-protection#b8d2d7d0d696d5d9d0d7d6ddc1f8cbd0d7c8cbd6d9c8d6ddcccfd7cad396dbd7d5" class="owners-cta">Get in touch →</a>
+        <a href="#" class="owners-cta" id="contact-cta">Get in touch →</a>
       </div>
       <div class="owners-badge">
         <div class="big-text">AI</div>
@@ -224,7 +224,7 @@
 
   <footer>
     <span class="wordmark">ShopSnapNetwork</span>
-    <p>Bellingham, WA · <a href="/cdn-cgi/l/email-protection#80eaefe8eeaeede1e8efeee5f9c0f3e8eff0f3eee1f0eee5f4f7eff2ebaee3efed" style="color:var(--color-muted);">Contact Us</a></p>
+    <p>Bellingham, WA · <a href="#" style="color:var(--color-muted);" id="contact-footer">Contact Us</a></p>
     <p>© 2026 JJMC LLC dba ShopSnap</p>
   </footer>
 
@@ -422,3 +422,11 @@
   // ============================================
   // UTILITY
   // ============================================
+
+  // Wire up contact links — split to prevent Cloudflare email mangling
+  const _e = ['hello', '@', 'shopsnapnetwork', '.com'].join('');
+  ['contact-cta', 'contact-footer'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.href = 'mailto:' + _e;
+  });
+
