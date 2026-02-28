@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopSnapNetwork — Notify Me!</title>
+  <meta name="description" content="Sign up for personalized new arrival alerts from your favorite consignment shops." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shopsnap.css" />
+
+  <style>
+    /* ── NOTIFY-SPECIFIC STYLES ── */
+
+    /* Compact how-it-works above form */
+    .how-mini { max-width: var(--max-w); margin: 0 auto; padding: 40px 24px 48px; }
+    .steps-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .step-mini {
+      padding: 20px 18px;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--color-border);
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      align-items: flex-start;
+      overflow: visible;
+      box-sizing: border-box;
+      padding-bottom: 24px;
+    }
+    .step-mini-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      min-height: 22px;
+      max-width: 22px;
+      max-height: 22px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 1;
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+    .step-mini-body { flex: 1; min-width: 0; overflow: visible; }
+    .step-mini h4 { font-size: 0.87rem; font-weight: 600; color: var(--color-primary); margin-bottom: 4px; }
+    .step-mini p  { font-size: 0.81rem; color: var(--color-muted); line-height: 1.5; }
+
+    /* Owner teaser at bottom */
+    .owner-teaser {
+      background: var(--color-primary); color: white;
+      position: relative; overflow: hidden;
+    }
+    .owner-teaser::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 90% 50%, rgba(200,119,58,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .owner-inner {
+      position: relative; max-width: var(--max-w); margin: 0 auto; padding: 56px 24px;
+      display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center;
+    }
+    .owner-teaser .section-label  { color: var(--color-accent); }
+    .owner-teaser .section-heading { color: white; font-size: clamp(1.4rem, 2.5vw, 1.9rem); margin-bottom: 14px; }
+    .owner-inner > div > p { color: rgba(255,255,255,0.72); font-size: 0.95rem; max-width: 480px; line-height: 1.7; }
+    .owner-cta {
+      display: inline-flex; align-items: center; gap: 8px; margin-top: 22px;
+      padding: 12px 24px; background: var(--color-accent); color: white;
+      text-decoration: none; border-radius: var(--radius-sm);
+      font-weight: 600; font-size: 0.93rem; transition: all 0.18s;
+    }
+    .owner-cta:hover { background: var(--color-accent-dk); transform: translateY(-1px); }
+    .owner-badge {
+      background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-md); padding: 28px 32px; text-align: center; min-width: 160px;
+    }
+    .owner-badge .big-text {
+      font-family: var(--font-display); font-size: 2.6rem; font-weight: 900;
+      color: var(--color-accent); line-height: 1;
+    }
+    .owner-badge .small-text { font-size: 0.8rem; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.4; }
+
+    @media (max-width: 760px) {
+      .steps-mini { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .owner-inner { grid-template-columns: 1fr; }
+      .owner-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- UNSUBSCRIBE PAGE (shown only when ?token= present) -->
+<div id="unsub-page" style="display:none;">
+  <div class="unsub-wrap">
+    <div class="unsub-card">
+      <div class="unsub-icon">✉️</div>
+      <h1 id="unsub-heading">Unsubscribe</h1>
+      <p id="unsub-body">You'll no longer receive new arrival alerts from ShopSnapNetwork. You can always sign up again if you change your mind.</p>
+      <button class="btn-unsub" id="unsub-btn">Confirm Unsubscribe</button><br/>
+      <a href="notify.html" class="unsub-link">← Keep my alerts</a>
+      <div class="msg" id="unsub-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="main-page" class="page-main">
+
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="nav-wordmark">ShopSnapNetwork</a>
+      <div class="nav-links">
+        <a href="index.html">Overview</a>
+        <a href="notify.html" class="active nav-cta">Notify Me!</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero-section">
+    <div class="hero-inner" style="padding-bottom: 64px;">
+      <p class="hero-eyebrow">New Arrival Alerts</p>
+      <h1 class="hero-headline">Be <em>first</em> to know<br/>when new items arrive.</h1>
+      <p class="hero-sub">Sign up once. Get notified when items matching your style and size arrive at participating consignment shops near you.</p>
+    </div>
+  </header>
+
+  <!-- COMPACT HOW IT WORKS -->
+  <div class="how-mini">
+    <div class="steps-mini">
+      <div class="step-mini">
+        <div class="step-mini-num">1</div>
+        <div class="step-mini-body">
+          <h4>Set your preferences</h4>
+          <p>Tell us your size, category, and which shops you love.</p>
+        </div>
+      </div>
+      <div class="step-mini">
+        <div class="step-mini-num">2</div>
+        <div class="step-mini-body">
+          <h4>We watch for matches</h4>
+          <p>New arrivals are checked against your preferences automatically.</p>
+        </div>
+      </div>
+      <div class="step-mini">
+        <div class="step-mini-num">3</div>
+        <div class="step-mini-body">
+          <h4>Get the email</h4>
+          <p>Photo, price, and shop — before the item hits the floor.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN UP FORM -->
+  <section class="signup-section">
+    <div class="card">
+      <h2 class="card-title">Get New Arrival Alerts</h2>
+      <p class="card-sub">One-of-a-kind items go fast. Be first in the door.</p>
+
+      <div class="field">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="field">
+        <label>Notify me about new arrivals at</label>
+        <div class="stores-grid" id="stores-grid">
+          <p style="color:var(--color-muted);font-size:0.9rem;">Loading stores…</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>What are you looking for?</label>
+        <div id="prefs-container"></div>
+        <button class="btn-add-pref" id="add-pref-btn">
+          <span style="font-size:1.1rem;">+</span> Add another preference
+        </button>
+      </div>
+
+      <button class="btn-primary" id="submit-btn" style="width:100%;">Sign Me Up</button>
+      <div class="msg" id="signup-msg"></div>
+    </div>
+  </section>
+
+  <!-- OWNER TEASER -->
+  <section class="owner-teaser">
+    <div class="owner-inner">
+      <div>
+        <p class="section-label">For Store Owners</p>
+        <h2 class="section-heading">Turn new inventory into immediate sales.</h2>
+        <p>ShopSnap connects your consignment shop to a network of motivated buyers who are already looking for what you have. AI-powered intake, automatic subscriber alerts, and Square POS integration — built for the way consignment shops actually work.</p>
+        <a href="index.html#for-owners" class="owner-cta">Learn more about ShopSnap →</a>
+      </div>
+      <div class="owner-badge">
+        <div class="big-text">AI</div>
+        <div class="small-text">Powered<br/>Intake &<br/>Alerts</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="wordmark">ShopSnapNetwork</span>
+    <p>Bellingham, WA · <a href="#" id="contact-footer">Contact Us</a></p>
+    <p>© 2026 JJMC LLC dba ShopSnap</p>
+  </footer>
+
+</div>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const { createClient } = supabase;
+
+  const SUPABASE_URL  = 'https://frfdumwlhrlsuxnznxrc.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZmR1bXdsaHJsc3V4bnpueHJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNTE0NTMsImV4cCI6MjA4NTYyNzQ1M30.0PhODSjEh7Kk10tSelfJ8QhTBs2YbUrfLmC9RIxw0PY';
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  const CATEGORIES = [
+    '— Any category —',
+    'Shirt','Blouse','Sweater','Sweatshirt','Hoodie','Tank Top','Crop Top',
+    'Jeans','Pants','Shorts','Skirt',
+    'Dress','Suit','Blazer',
+    'Jacket','Coat','Vest',
+    'Accessories','Hat','Tie','Other'
+  ];
+  const DEPARTMENTS = ["— Any dept —", "Women's", "Men's", "Kids'", "Unisex"];
+  const SIZES = [
+    '— Any size —',
+    'XXS','XS','S','M','L','XL','XXL','XXXL',
+    '0','2','4','6','8','10','12','14','16',
+    '24','25','26','27','28','29','30','31','32','33','34','35','36','38','40',
+    '6','6.5','7','7.5','8','8.5','9','9.5','10','10.5','11','11.5','12',
+    'One Size'
+  ];
+
+  let prefCount = 0;
+
+  // ── ROUTING ──
+  const params     = new URLSearchParams(window.location.search);
+  const unsubToken = params.get('token');
+
+  if (unsubToken) {
+    document.getElementById('unsub-page').style.display = 'block';
+    document.getElementById('main-page').style.display  = 'none';
+    document.getElementById('unsub-btn').addEventListener('click', confirmUnsubscribe);
+  } else {
+    loadStores();
+    addPrefRow();
+    document.getElementById('submit-btn').addEventListener('click', handleSignUp);
+    document.getElementById('add-pref-btn').addEventListener('click', addPrefRow);
+  }
+
+  // ── LOAD STORES FROM SUPABASE ──
+  async function loadStores() {
+    const { data, error } = await sb
+      .from('stores')
+      .select('id, store_name, city')
+      .order('store_name');
+
+    const grid = document.getElementById('stores-grid');
+    if (error || !data || data.length === 0) {
+      grid.innerHTML = '<p style="color:var(--color-muted);font-size:0.9rem;">No stores available yet — check back soon.</p>';
+      return;
+    }
+    grid.innerHTML = data.map(s => `
+      <label class="store-option" id="store-label-${s.id}">
+        <input type="checkbox" value="${s.id}" class="store-checkbox" />
+        <span>${s.store_name}</span>
+      </label>
+    `).join('');
+
+    grid.querySelectorAll('.store-checkbox').forEach(cb => {
+      cb.addEventListener('change', () => {
+        document.getElementById(`store-label-${cb.value}`)
+          .classList.toggle('checked', cb.checked);
+      });
+    });
+  }
+
+  // ── PREFERENCE ROWS ──
+  function makeSelect(options, id) {
+    return `<select id="${id}">
+      ${options.map((o, i) => `<option value="${i === 0 ? '' : o}">${o}</option>`).join('')}
+    </select>`;
+  }
+
+  function addPrefRow() {
+    prefCount++;
+    const n = prefCount;
+    const rowId = `pref-${n}`;
+    document.getElementById('prefs-container').insertAdjacentHTML('beforeend', `
+      <div class="pref-row" id="${rowId}">
+        <div class="field"><label>Category</label>${makeSelect(CATEGORIES, `cat-${n}`)}</div>
+        <div class="field"><label>Department</label>${makeSelect(DEPARTMENTS, `dept-${n}`)}</div>
+        <div class="field"><label>Size</label>${makeSelect(SIZES, `size-${n}`)}</div>
+        <button class="btn-remove" title="Remove">×</button>
+      </div>
+    `);
+    document.querySelector(`#${rowId} .btn-remove`).addEventListener('click', () => {
+      if (document.querySelectorAll('.pref-row').length > 1)
+        document.getElementById(rowId)?.remove();
+    });
+  }
+
+  // ── SIGN UP ──
+  async function handleSignUp() {
+    const email  = document.getElementById('email').value.trim();
+    const msgEl  = document.getElementById('signup-msg');
+    const btn    = document.getElementById('submit-btn');
+    msgEl.className = 'msg'; msgEl.style.display = 'none';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showMsg(msgEl, 'error', 'Please enter a valid email address.'); return;
+    }
+    const checkedStores = [...document.querySelectorAll('.store-checkbox:checked')];
+    if (checkedStores.length === 0) {
+      showMsg(msgEl, 'error', 'Please select at least one store.'); return;
+    }
+
+    const records = [];
+    document.querySelectorAll('.pref-row').forEach(row => {
+      const n = row.id.replace('pref-', '');
+      checkedStores.forEach(storeEl => {
+        records.push({
+          email,
+          store_id:   storeEl.value,
+          category:   document.getElementById(`cat-${n}`)?.value  || null,
+          department: document.getElementById(`dept-${n}`)?.value || null,
+          size:       document.getElementById(`size-${n}`)?.value || null,
+          active:     true,
+        });
+      });
+    });
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Signing up…';
+    const { error } = await sb.from('subscriptions').insert(records);
+    btn.disabled = false; btn.innerHTML = 'Sign Me Up';
+
+    if (error) {
+      showMsg(msgEl, 'error', 'Something went wrong. Please try again or contact us.');
+    } else {
+      showMsg(msgEl, 'success', `✓ You're signed up! We'll email you when matching items arrive.`);
+      document.getElementById('email').value = '';
+      document.querySelectorAll('.store-checkbox').forEach(c => {
+        c.checked = false;
+        document.getElementById(`store-label-${c.value}`)?.classList.remove('checked');
+      });
+      document.getElementById('prefs-container').innerHTML = '';
+      prefCount = 0; addPrefRow();
+    }
+  }
+
+  // ── UNSUBSCRIBE ──
+  async function confirmUnsubscribe() {
+    const btn   = document.getElementById('unsub-btn');
+    const msgEl = document.getElementById('unsub-msg');
+    btn.disabled = true; btn.textContent = 'Unsubscribing…';
+
+    const { error } = await sb.from('subscriptions')
+      .update({ active: false })
+      .eq('unsubscribe_token', unsubToken);
+
+    if (error) {
+      showMsg(msgEl, 'error', 'Something went wrong. Please contact us directly.');
+      btn.disabled = false; btn.textContent = 'Confirm Unsubscribe';
+    } else {
+      document.getElementById('unsub-heading').textContent = "You're unsubscribed.";
+      document.getElementById('unsub-body').textContent =
+        "We've removed you from our alert list. You won't receive any more emails from ShopSnapNetwork.";
+      btn.style.display = 'none';
+      document.querySelector('.unsub-link').style.display = 'none';
+      showMsg(msgEl, 'success', '✓ Done — you have been successfully unsubscribed.');
+    }
+  }
+
+  // ── UTILITY ──
+  function showMsg(el, type, text) {
+    el.className = 'msg ' + type;
+    el.textContent = text;
+    el.style.display = 'block';
+  }
+
+  const _e = ['johnmahoney', '@', 'shopsnapnetwork', '.com'].join('');
+  document.getElementById('contact-footer').href = 'mailto:' + _e;
+</script>
+</body>
+</html>
